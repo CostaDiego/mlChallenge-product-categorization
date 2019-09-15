@@ -104,4 +104,8 @@ venv.bak/
 .mypy_cache/
 
 #ignore datasets
-data/dataset/*
+data/*
+
+#ignore prototyping notebook
+mlChallenge.ipynb
+Untitled.ipynb
