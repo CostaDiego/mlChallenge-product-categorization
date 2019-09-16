@@ -9,7 +9,9 @@ def featureExtraction(data, target: str, unique = True, columnName: str = None):
         data : DataFrame
             The pandas Data Frame to be used in the feature extraction
         target : str
-            
+            The target column to extract features
+        unique : bool, default True
+            Inform whether or not is to filter the features by unique values
         columnName : str, optional
             The name of the column on the new generated feature file
 
@@ -36,3 +38,24 @@ def featureExtraction(data, target: str, unique = True, columnName: str = None):
     dataFinal = pd.DataFrame( dataTmp, columns = column )
     
     return dataFinal
+
+def filterPerRow(data, target, value):
+    """Filter the row of the dataFrame by a given value.
+    Implemented using the pandas DataFrame.
+
+    Parameters
+    ----------
+    data: DataFrame
+        The DataFrame intended to be filtered.
+    target: str
+        The target column to be filtered
+    value: 
+        The value to used in the filter
+
+    return: DataFrame,
+    ------
+        Return a the filtered dataFrame
+    """
+    filteredData = data[data[str(target)] == str(value)]
+    filteredData.reset_index(drop = True)
+    return filteredData
