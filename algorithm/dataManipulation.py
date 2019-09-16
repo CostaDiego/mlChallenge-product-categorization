@@ -35,11 +35,11 @@ def featureExtraction(data, target: str, unique = True, columnName: str = None):
     else:
         column.append(str(columnName))
 
-    dataFinal = pd.DataFrame( dataTmp, columns = column )
+    dataFinal = pd.DataFrame( dataTmp, columns = column)
     
     return dataFinal
 
-def filterPerRow(data, target, value):
+def filterPerRow(data, target, value, resetIndex = True ):
     """Filter the row of the dataFrame by a given value.
     Implemented using the pandas DataFrame.
 
@@ -57,5 +57,8 @@ def filterPerRow(data, target, value):
         Return a the filtered dataFrame
     """
     filteredData = data[data[str(target)] == str(value)]
-    filteredData.reset_index(drop = True)
+
+    if resetIndex:
+        filteredData.reset_index(drop = True)
+
     return filteredData
