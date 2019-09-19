@@ -2,7 +2,7 @@ import pandas as pd
 import gc
 from nltk import sent_tokenize, word_tokenize, pos_tag
 
-STANDARD_BATCH_SIZE = 1000
+STANDARD_BATCH_SIZE = 10000
 
 def tokenization(data, target, batchSize = STANDARD_BATCH_SIZE, nbRows = None):
     print("Initializing Tokenization.")

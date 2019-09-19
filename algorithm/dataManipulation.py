@@ -1,4 +1,5 @@
 import pandas as pd
+from os import path, makedirs
 
 def featureExtraction(data, target: str, unique = True, columnName: str = None):
     """ Extracts a feature of a dataFrame. It can extract the pure features
@@ -39,7 +40,7 @@ def featureExtraction(data, target: str, unique = True, columnName: str = None):
     
     return dataFinal
 
-def filterPerRow(data, target, value, resetIndex = True ):
+def filterPerRow(data, target, value, resetIndex = True, dropIndex = True):
     """Filter the row of the dataFrame by a given value.
     Implemented using the pandas DataFrame.
 
@@ -59,6 +60,29 @@ def filterPerRow(data, target, value, resetIndex = True ):
     filteredData = data[data[str(target)] == str(value)]
 
     if resetIndex:
-        filteredData.reset_index(drop = True)
+        filteredData = filteredData.reset_index(drop = dropIndex)
 
     return filteredData
+
+def checkDirs(dirs, create = False):
+    if isinstance(dirs, list):
+        created = []
+        nonexistent = []
+        for directory in dirs:
+            if not path.exists(str(directory)):
+                if create:
+                    makedirs(str(directory))
+                    created.append(directory)
+
+                else:
+                    nonexistent.append(directory)
+        
+        if create:
+            print("The following directories were created:\n{dirs}".format(dirs = [dirs for dirs in created]))
+        
+        else:
+            print("The following directories are nonexistent:\n{dirs}".format(dirs = [dirs for dirs in nonexistent]))
+
+    else:
+        raise Exception("The input must be an list")
+    
