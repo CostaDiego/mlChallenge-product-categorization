@@ -66,6 +66,7 @@ def filterPerRow(data, target, value, resetIndex = True, dropIndex = True):
 
 def checkDirs(dirs, create = False):
     if isinstance(dirs, list):
+        print("Checkig the structures os directories.")
         created = []
         nonexistent = []
         for directory in dirs:
