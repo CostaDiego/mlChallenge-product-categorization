@@ -78,10 +78,18 @@ def checkDirs(dirs, create = False):
                     nonexistent.append(directory)
         
         if create:
-            print("The following directories were created:\n{dirs}".format(dirs = [dirs for dirs in created]))
+            if created:
+                print("The following directories were created:\n{dirs}".format(
+                    dirs = [dirs for dirs in created]))
+            else:
+                print("All directories already exists.")
         
         else:
-            print("The following directories are nonexistent:\n{dirs}".format(dirs = [dirs for dirs in nonexistent]))
+            if nonexistent:
+                print("The following directories are nonexistent:\n{dirs}".format(
+                    dirs = [dirs for dirs in nonexistent]))
+            else:
+                print("All directories already exists.")
 
     else:
         raise Exception("The input must be an list")
