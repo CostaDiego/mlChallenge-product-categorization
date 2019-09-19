@@ -23,37 +23,21 @@ dm.checkDirs(dirList, create = True)
 
 print("Calling the tokenization method from dataProcessing library.")
 
-print("\tTokenizing portuguese dataset.")
-tokensPortuguese = dp.tokenization(
+print("Tokenizing portuguese dataset.")
+dp.tokenization(
     os.path.join(TRAIN_DIR, TRAIN_PORTUGUESE_FILE),
-    'title'
+    'title',
+    savePath = os.path.join(TOKENS_DIR,TOKEN_PORTUGUESE_FILE),
+    batchSize = 10000
 )
 
-print("\tSaving portuguese dataset.")
-tokensPortuguese.to_csv(
-    os.path.join(TOKENS_DIR,TOKEN_PORTUGUESE_FILE),
-    index = False
-)
-
-print("\tCleaning memory.")
-del(tokensPortuguese)
-gc.collect()
-
-print("\tTokenizing spanish dataset.")
-tokensSpanish = dp.tokenization(
+print("Tokenizing spanish dataset.")
+dp.tokenization(
     os.path.join(TRAIN_DIR, TRAIN_SPANISH_FILE),
-    'title'
+    'title',
+    savePath = os.path.join(TOKENS_DIR,TOKEN_SPANISH_FILE),
+    batchSize = 10000
 )
-
-print("\tSaving spanish dataset.")
-tokensSpanish.to_csv(
-    os.path.join(TOKENS_DIR,TOKEN_SPANISH_FILE),
-    index = False
-)
-
-print("\tCleaning memory.")
-del(tokensSpanish)
-gc.collect()
 
 print("Exiting script.")
 
