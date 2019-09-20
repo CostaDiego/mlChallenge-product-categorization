@@ -15,29 +15,48 @@ TRAIN_PORTUGUESE_FILE = "trainPortuguese.csv"
 TRAIN_SPANISH_FILE = "trainSpanish.csv"
 TOKEN_PORTUGUESE_FILE = "tokensPortuguese.csv"
 TOKEN_SPANISH_FILE = "tokensSpanish.csv"
+CLEAN_TOKEN_PORTUGUESE_FILE = "cleanTokensPortuguese.csv"
+CLEAN_TOKEN_SPANISH_FILE = "cleanTokensSpanish.csv"
 
 print("Initializing script.")
 
 print("Calling the method to perform the directories checks.")
 dm.checkDirs(dirList, create = True)
 
-print("Calling the tokenization method from dataProcessing library.")
+# print("Calling the tokenization method from dataProcessing library.")
 
-print("Tokenizing portuguese dataset.")
-dp.tokenization(
-    os.path.join(TRAIN_DIR, TRAIN_PORTUGUESE_FILE),
+# print("Tokenizing portuguese dataset.")
+# dp.tokenization(
+#     os.path.join(TRAIN_DIR, TRAIN_PORTUGUESE_FILE),
+#     'title',
+#     savePath = os.path.join(TOKENS_DIR,TOKEN_PORTUGUESE_FILE),
+#     batchSize = 10000
+# )
+
+# print("Tokenizing spanish dataset.")
+# dp.tokenization(
+#     os.path.join(TRAIN_DIR, TRAIN_SPANISH_FILE),
+#     'title',
+#     savePath = os.path.join(TOKENS_DIR,TOKEN_SPANISH_FILE),
+#     batchSize = 10000
+# )
+
+print("cleaning portuguese dataset.")
+dp.removeNonAlpha(
+    os.path.join(TOKENS_DIR, TOKEN_PORTUGUESE_FILE),
     'title',
-    savePath = os.path.join(TOKENS_DIR,TOKEN_PORTUGUESE_FILE),
+    savePath = os.path.join(TOKENS_DIR,CLEAN_TOKEN_PORTUGUESE_FILE),
     batchSize = 10000
 )
 
-print("Tokenizing spanish dataset.")
-dp.tokenization(
-    os.path.join(TRAIN_DIR, TRAIN_SPANISH_FILE),
+print("cleaning spanish dataset.")
+dp.removeNonAlpha(
+    os.path.join(TOKENS_DIR, TOKEN_SPANISH_FILE),
     'title',
-    savePath = os.path.join(TOKENS_DIR,TOKEN_SPANISH_FILE),
+    savePath = os.path.join(TOKENS_DIR,CLEAN_TOKEN_SPANISH_FILE),
     batchSize = 10000
 )
+
 
 print("Exiting script.")
 
