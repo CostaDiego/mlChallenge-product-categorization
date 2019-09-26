@@ -95,3 +95,23 @@ def checkDirs(dirs, create = False):
     else:
         raise Exception("The input must be an list")
     
+def checkFiles(paths, files):
+    if isinstance(paths, list) and isinstance(files, list) and len(paths) == len(files) :
+        indexName = []
+        exists = []
+        finalPath = []
+
+        for name in files:
+            indexName.append(str(name))
+
+        for i in range(len(paths)):
+            finalPath.append(path.join(paths[i],files[i]))
+            
+        for pth in finalPath:
+            exists.append(path.isfile(str(pth)))
+        
+        df = pd.DataFrame(exists, index = indexName, columns = ['Exist'])
+        return df
+
+    else:
+        raise Exception("The inputs must be lists and have the same lenght.")  
