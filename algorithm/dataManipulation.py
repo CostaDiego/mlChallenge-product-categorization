@@ -1,6 +1,8 @@
 import pandas as pd
 from os import path, makedirs
 
+DEFAULT_COLUMN_NAME = 'Exist'
+
 def featureExtraction(data, target: str, unique = True, columnName: str = None):
     """ Extracts a feature of a dataFrame. It can extract the pure features
     or filter by unique values
@@ -95,11 +97,14 @@ def checkDirs(dirs, create = False):
     else:
         raise Exception("The input must be an list")
     
-def checkFiles(paths, files):
+def checkFiles(paths, files, column = DEFAULT_COLUMN_NAME):
     if isinstance(paths, list) and isinstance(files, list) and len(paths) == len(files) :
         indexName = []
         exists = []
         finalPath = []
+        columnName = []
+
+        columnName.append(str(column))
 
         for name in files:
             indexName.append(str(name))
@@ -109,8 +114,8 @@ def checkFiles(paths, files):
             
         for pth in finalPath:
             exists.append(path.isfile(str(pth)))
-        
-        df = pd.DataFrame(exists, index = indexName, columns = ['Exist'])
+
+        df = pd.DataFrame(exists, index = indexName, columns = columnName)
         return df
 
     else:
