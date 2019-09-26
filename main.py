@@ -1,6 +1,7 @@
 import pandas as pd
 import gc
 import os.path
+from algorithm import utils
 import algorithm.dataManipulation as dm
 import algorithm.dataProcessing as dp
 
@@ -34,15 +35,15 @@ files = [BASE_TRAIN_FILE,
     CLEAN_TOKEN_PORTUGUESE_FILE,
     CLEAN_TOKEN_SPANISH_FILE]
 
-INFO_COLUMN_NAME = dm.DEFAULT_COLUMN_NAME
+INFO_COLUMN_NAME = utils.DEFAULT_COLUMN_NAME
 
 print("Initializing script.")
 
 print("Calling the method to perform the directories checks.")
-dm.checkDirs(dirList, create = True)
+utils.checkDirs(dirList, create = True)
 
 print("Getting files info.")
-info = dm.checkFiles(paths, files)
+info = utils.checkFiles(paths, files)
 
 if not info.at[TOKEN_PORTUGUESE_FILE, INFO_COLUMN_NAME] or not info.at[TOKEN_SPANISH_FILE, INFO_COLUMN_NAME]:
 
