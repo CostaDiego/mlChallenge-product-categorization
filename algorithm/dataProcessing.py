@@ -9,7 +9,12 @@ STANDARD_BATCH_SIZE = 10000
 TOKEN_MIN_LENGTH = 3
 
 UNIT_MEASUREMENT = ['mm','m','cm','km','kg','g','mg','l','v','a','w','ah',
-    'n','lb','atm','ml','cm2','cm3','m2','m3','t']
+    'n','lb','atm','ml','cm2','cm3','m2','m3','t','psi','volt','volts','ampere',
+    'amperes','voltagem','potencia','potência','p','m','g','gg','s','xl','xxl']
+SPECIFIC_WORDS = ['novo','nuevo','nova','nunca','usado','semi','usada','vendo','viendo','alugo',
+    'alquilo', 'grátis','gratis', 'envio', 'liberar', 'frete', 'flete','kilo','kilos',
+    'quilo','quilos', 'unidade','unidades','unidad','garantia','ano', 'anos','año','años',
+    'original','conservado','conservada','peças','pçs','pcs','pack']
 
 def tokenization(data, target, savePath = None, batchSize = STANDARD_BATCH_SIZE, nbRows = None):
     print("\tInitializing Tokenization.")
@@ -144,7 +149,7 @@ def removeNonAlpha(data, target, savePath = None, batchSize = STANDARD_BATCH_SIZ
             "Please input a Pandas DataFrame or a path for a 'csv' file.")
 
 def getStopWords(language):
-    words = stopwords.words(str(language)) + UNIT_MEASUREMENT
+    words = stopwords.words(str(language)) + UNIT_MEASUREMENT + SPECIFIC_WORDS
     return words
 
 def listExtraction(listOflist):
@@ -165,10 +170,10 @@ def removeStopWords(data, target, language, savePath = None, batchSize = STANDAR
         data[str(target)] = data[str(target)].map(
         lambda sentences: [ 
             [
-                token for token in sentence if token and token not in stopWords
+                token.lower() for token in sentence if token and token.lower() not in stopWords
             ]
             for sentence in sentences if sentence])
-            
+
         data[str(target)] = data[str(target)].map(lambda sentences:
             listExtraction(sentences))
 
@@ -183,7 +188,7 @@ def removeStopWords(data, target, language, savePath = None, batchSize = STANDAR
             for batch in pd.read_csv(str(data), converters={'title':literal_eval}, chunksize=batchSize, nrows=nbRows):
                 batch[str(target)] = batch[str(target)].map(lambda sentences: [ 
                     [
-                        token for token in sentence if token and token not in stopWords
+                        token.lower() for token in sentence if token and token.lower() not in stopWords
                     ]
                     for sentence in sentences if sentence])
 
@@ -207,7 +212,7 @@ def removeStopWords(data, target, language, savePath = None, batchSize = STANDAR
             for batch in pd.read_csv(str(data), converters={'title':literal_eval}, chunksize=batchSize, nrows=nbRows):
                 batch[str(target)] = batch[str(target)].map(lambda sentences: [ 
                     [
-                        token for token in sentence if token and token not in stopWords
+                        token.lower() for token in sentence if token and token.lower() not in stopWords
                     ]
                     for sentence in sentences if sentence])
 

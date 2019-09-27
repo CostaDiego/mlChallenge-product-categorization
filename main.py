@@ -8,8 +8,9 @@ import algorithm.dataProcessing as dp
 BASE_DATASET_DIR = "./data/dataset/base"
 TRAIN_DIR = "./data/dataset/train"
 TOKENS_DIR = "./data/preProcessedData/tokens"
+STOPWORDS_DIR = "./data/preProcessedData/stopWords"
 
-dirList = [BASE_DATASET_DIR, TRAIN_DIR, TOKENS_DIR]
+dirList = [BASE_DATASET_DIR, TRAIN_DIR, TOKENS_DIR, STOPWORDS_DIR]
 
 BASE_TRAIN_FILE = "train.csv"
 TRAIN_PORTUGUESE_FILE = "trainPortuguese.csv"
@@ -18,6 +19,8 @@ TOKEN_PORTUGUESE_FILE = "tokensPortuguese.csv"
 TOKEN_SPANISH_FILE = "tokensSpanish.csv"
 CLEAN_TOKEN_PORTUGUESE_FILE = "cleanTokensPortuguese.csv"
 CLEAN_TOKEN_SPANISH_FILE = "cleanTokensSpanish.csv"
+CLEAN_STOPWORDS_PORTUGUESE_FILE = "cleanStopWordsPortuguese.csv"
+CLEAN_STOPWORDS_SPANISH_FILE = "cleanStopWordsSpanish.csv"
 
 paths = [BASE_DATASET_DIR,
     TRAIN_DIR,
@@ -25,7 +28,9 @@ paths = [BASE_DATASET_DIR,
     TOKENS_DIR,
     TOKENS_DIR,
     TOKENS_DIR,
-    TOKENS_DIR]
+    TOKENS_DIR,
+    STOPWORDS_DIR,
+    STOPWORDS_DIR]
 
 files = [BASE_TRAIN_FILE,
     TRAIN_PORTUGUESE_FILE,
@@ -33,7 +38,9 @@ files = [BASE_TRAIN_FILE,
     TOKEN_PORTUGUESE_FILE,
     TOKEN_SPANISH_FILE,
     CLEAN_TOKEN_PORTUGUESE_FILE,
-    CLEAN_TOKEN_SPANISH_FILE]
+    CLEAN_TOKEN_SPANISH_FILE,
+    CLEAN_STOPWORDS_PORTUGUESE_FILE,
+    CLEAN_STOPWORDS_SPANISH_FILE]
 
 INFO_COLUMN_NAME = utils.DEFAULT_COLUMN_NAME
 
@@ -91,6 +98,31 @@ if not info.at[CLEAN_TOKEN_PORTUGUESE_FILE, INFO_COLUMN_NAME] or not info.at[CLE
         )
 else:
     print("The tokenized data were already cleaned.")
+
+if not info.at[CLEAN_STOPWORDS_PORTUGUESE_FILE, INFO_COLUMN_NAME] or not info.at[CLEAN_STOPWORDS_SPANISH_FILE, INFO_COLUMN_NAME]:
+    
+    print("Calling StopWords cleaner method")
+
+    if not info.at[CLEAN_STOPWORDS_PORTUGUESE_FILE, INFO_COLUMN_NAME]:
+        print("Removing StopWords from portuguese dataset.")
+        dp.removeStopWords(
+            os.path.join(TOKENS_DIR,CLEAN_TOKEN_PORTUGUESE_FILE),
+            'title',
+            'portuguese',
+            savePath = os.path.join(STOPWORDS_DIR,CLEAN_STOPWORDS_PORTUGUESE_FILE),
+            batchSize = 10000
+        )
+    if not info.at[CLEAN_STOPWORDS_SPANISH_FILE, INFO_COLUMN_NAME]:
+        print("Removing StopWords from spanish dataset.")
+        dp.removeStopWords(
+            os.path.join(TOKENS_DIR,CLEAN_TOKEN_SPANISH_FILE),
+            'title',
+            'spanish',
+            savePath = os.path.join(STOPWORDS_DIR,CLEAN_STOPWORDS_SPANISH_FILE),
+            batchSize = 10000
+        )
+else:
+    print("The StopWords were already removed from data.")
 
 print("Exiting script.")
 
