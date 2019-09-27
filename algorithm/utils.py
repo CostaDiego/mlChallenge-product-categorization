@@ -5,7 +5,7 @@ DEFAULT_COLUMN_NAME = 'Exist'
 
 def checkDirs(dirs, create = False):
     if isinstance(dirs, list):
-        print("Checkig the structures os directories.")
+        print("\tCheckig the structures os directories.")
         created = []
         nonexistent = []
         for directory in dirs:
@@ -19,20 +19,20 @@ def checkDirs(dirs, create = False):
         
         if create:
             if created:
-                print("The following directories were created:\n{dirs}".format(
+                print("\tThe following directories were created:\n{dirs}".format(
                     dirs = [dirs for dirs in created]))
             else:
-                print("All directories already exists.")
+                print("\tAll directories already exists.")
         
         else:
             if nonexistent:
-                print("The following directories are nonexistent:\n{dirs}".format(
+                print("\tThe following directories are nonexistent:\n{dirs}".format(
                     dirs = [dirs for dirs in nonexistent]))
             else:
-                print("All directories already exists.")
+                print("\tAll directories already exists.")
 
     else:
-        raise Exception("The input must be an list")
+        raise Exception("\tThe input must be an list")
     
 def checkFiles(paths, files, column = DEFAULT_COLUMN_NAME):
     if isinstance(paths, list) and isinstance(files, list) and len(paths) == len(files) :
@@ -56,4 +56,4 @@ def checkFiles(paths, files, column = DEFAULT_COLUMN_NAME):
         return df
 
     else:
-        raise Exception("The inputs must be lists and have the same lenght.")  
+        raise Exception("\tThe inputs must be lists and have the same lenght.")  

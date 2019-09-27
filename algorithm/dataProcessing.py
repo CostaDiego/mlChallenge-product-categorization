@@ -1,16 +1,21 @@
 import pandas as pd
 import gc
 from ast import literal_eval
-from nltk import sent_tokenize, word_tokenize, pos_tag
+from nltk import sent_tokenize, word_tokenize
+from nltk.corpus import stopwords
+
 
 STANDARD_BATCH_SIZE = 10000
 TOKEN_MIN_LENGTH = 3
 
+UNIT_MEASUREMENT = ['mm','m','cm','km','kg','g','mg','l','v','a','w','ah',
+    'n','lb','atm','ml','cm2','cm3','m2','m3','t']
+
 def tokenization(data, target, savePath = None, batchSize = STANDARD_BATCH_SIZE, nbRows = None):
-    print("Initializing Tokenization.")
+    print("\tInitializing Tokenization.")
 
     if isinstance(data, pd.DataFrame):
-        print("Using Data Frame.")
+        print("\tUsing Data Frame.")
         data[str(target)] = data[str(target)].map(sent_tokenize)
         data[str(target)] = data[str(target)].map(lambda titles: 
             [
@@ -21,8 +26,8 @@ def tokenization(data, target, savePath = None, batchSize = STANDARD_BATCH_SIZE,
     elif isinstance(data, str):
         if isinstance(savePath, str):
 
-            print("Importing file from path: {path}".format(path = str(data)))
-            print("Saving file on path: {path}".format(path = str(savePath)))
+            print("\tImporting file from path: {path}".format(path = str(data)))
+            print("\tSaving file on path: {path}".format(path = str(savePath)))
             FtIndex = True
             for batch in pd.read_csv(str(data), chunksize=batchSize, nrows=nbRows):
                 batch[str(target)] = batch[str(target)].map(sent_tokenize)
@@ -43,7 +48,7 @@ def tokenization(data, target, savePath = None, batchSize = STANDARD_BATCH_SIZE,
                 gc.collect()
         else:
             processedData = []
-            print("Importing file from path: {path}".format(path = str(data)))
+            print("\tImporting file from path: {path}".format(path = str(data)))
 
             for batch in pd.read_csv(str(data), chunksize=batchSize, nrows=nbRows):
                 batch[str(target)] = batch[str(target)].map(sent_tokenize)
@@ -59,10 +64,10 @@ def tokenization(data, target, savePath = None, batchSize = STANDARD_BATCH_SIZE,
             return finalData
 
     else:
-        raise Exception("Data Format not supported. ",
+        raise Exception("\tData Format not supported. ",
             "Please input a Pandas DataFrame or a path for a 'csv' file.")
     
-    print("Tokenization finished.")
+    print("\tTokenization finished.")
 
 def cleaner(word, minLen = TOKEN_MIN_LENGTH):
     # print(word)
@@ -79,13 +84,13 @@ def cleaner(word, minLen = TOKEN_MIN_LENGTH):
             return ''
         
     else:
-        raise Exception("Input expected is a String")
+        raise Exception("\tInput expected is a String")
 
 def removeNonAlpha(data, target, savePath = None, batchSize = STANDARD_BATCH_SIZE, nbRows = None):
-    print("Initializing data cleaning")
+    print("\tInitializing data cleaning")
     
     if isinstance(data, pd.DataFrame):
-        print("Using Data Frame.")
+        print("\tUsing Data Frame.")
         data[str(target)] = data[str(target)].map(lambda sentences:[ 
                     [
                         cleaner(token) for token in sentence if not '' 
@@ -95,8 +100,8 @@ def removeNonAlpha(data, target, savePath = None, batchSize = STANDARD_BATCH_SIZ
     
     elif isinstance(data, str):
         if isinstance(savePath, str):
-            print("Importing file from path: {path}".format(path = str(data)))
-            print("Saving file on path: {path}".format(path = str(savePath)))
+            print("\tImporting file from path: {path}".format(path = str(data)))
+            print("\tSaving file on path: {path}".format(path = str(savePath)))
 
             FtIndex = True
 
@@ -119,7 +124,7 @@ def removeNonAlpha(data, target, savePath = None, batchSize = STANDARD_BATCH_SIZ
 
         else:
             cleanedData = []
-            print("Importing file from path: {path}".format(path = str(data)))
+            print("\tImporting file from path: {path}".format(path = str(data)))
 
             for batch in pd.read_csv(str(data), converters={'title':literal_eval}, chunksize=batchSize, nrows=nbRows):
                 batch[str(target)] = batch[str(target)].map(lambda sentences:[ 
@@ -135,5 +140,71 @@ def removeNonAlpha(data, target, savePath = None, batchSize = STANDARD_BATCH_SIZ
             return finalData
 
     else:
-        raise Exception("Data Format not supported. ",
+        raise Exception("\tData Format not supported. ",
             "Please input a Pandas DataFrame or a path for a 'csv' file.")
+# --------------------------Revisar código Abaixo
+
+def getStopWords(language):
+    words = stopwords.words(str(language)) + UNIT_MEASUREMENT
+    return words
+
+def removeStopWords(data, target, language, savePath = None, batchSize = STANDARD_BATCH_SIZE, nbRows = None):
+    stopWords = getStopWords(language)  
+    print("\tInitializing removal of StopWords.")
+
+    if isinstance(data, pd.DataFrame):
+        print("\tUsing Data Frame.")
+        data[str(target)] = data[str(target)].map(
+        lambda sentences: [ 
+            [
+                token for token in sentence if token and token not in stopWords
+            ]
+            for sentence in sentences if sentence])
+        return data
+
+    elif isinstance(data, str):
+        if isinstance(savePath, str):
+
+            print("\tImporting file from path: {path}".format(path = str(data)))
+            print("\tSaving file on path: {path}".format(path = str(savePath)))
+            FtIndex = True
+            for batch in pd.read_csv(str(data), chunksize=batchSize, nrows=nbRows):
+                batch[str(target)] = batch[str(target)].map(lambda sentences: [ 
+                    [
+                        token for token in sentence if token and token not in stopWords
+                    ]
+                    for sentence in sentences if sentence])
+                
+                batch.to_csv(str(savePath),
+                                index = False,
+                                header = FtIndex,
+                                mode = "a"
+                                    )
+                if FtIndex:
+                    FtIndex = False
+
+                del(batch)
+                gc.collect()
+        else:
+            processedData = []
+            print("\tImporting file from path: {path}".format(path = str(data)))
+
+            for batch in pd.read_csv(str(data), chunksize=batchSize, nrows=nbRows):
+                batch[str(target)] = batch[str(target)].map(lambda sentences: [ 
+                    [
+                        token for token in sentence if token and token not in stopWords
+                    ]
+                    for sentence in sentences if sentence])
+                    
+                processedData.append(batch)
+
+                del(batch)
+                gc.collect()
+            finalData = pd.concat(processedData, ignore_index = True)
+            return finalData
+
+    else:
+        raise Exception("\tData Format not supported. ",
+            "Please input a Pandas DataFrame or a path for a 'csv' file.")
+    
+    print("\tRemoval of StopWords finished.")
