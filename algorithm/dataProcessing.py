@@ -142,11 +142,19 @@ def removeNonAlpha(data, target, savePath = None, batchSize = STANDARD_BATCH_SIZ
     else:
         raise Exception("\tData Format not supported. ",
             "Please input a Pandas DataFrame or a path for a 'csv' file.")
-# --------------------------Revisar código Abaixo
 
 def getStopWords(language):
     words = stopwords.words(str(language)) + UNIT_MEASUREMENT
     return words
+
+def listExtraction(listOflist):
+    finalList = []
+
+    for sentence in listOflist:
+        for token in sentence:
+            finalList.append(token)
+    
+    return finalList
 
 def removeStopWords(data, target, language, savePath = None, batchSize = STANDARD_BATCH_SIZE, nbRows = None):
     stopWords = getStopWords(language)  
@@ -160,6 +168,10 @@ def removeStopWords(data, target, language, savePath = None, batchSize = STANDAR
                 token for token in sentence if token and token not in stopWords
             ]
             for sentence in sentences if sentence])
+            
+        data[str(target)] = data[str(target)].map(lambda sentences:
+            listExtraction(sentences))
+
         return data
 
     elif isinstance(data, str):
@@ -168,13 +180,16 @@ def removeStopWords(data, target, language, savePath = None, batchSize = STANDAR
             print("\tImporting file from path: {path}".format(path = str(data)))
             print("\tSaving file on path: {path}".format(path = str(savePath)))
             FtIndex = True
-            for batch in pd.read_csv(str(data), chunksize=batchSize, nrows=nbRows):
+            for batch in pd.read_csv(str(data), converters={'title':literal_eval}, chunksize=batchSize, nrows=nbRows):
                 batch[str(target)] = batch[str(target)].map(lambda sentences: [ 
                     [
                         token for token in sentence if token and token not in stopWords
                     ]
                     for sentence in sentences if sentence])
-                
+
+                batch[str(target)] = batch[str(target)].map(lambda sentences:
+                    listExtraction(sentences))
+
                 batch.to_csv(str(savePath),
                                 index = False,
                                 header = FtIndex,
@@ -189,13 +204,16 @@ def removeStopWords(data, target, language, savePath = None, batchSize = STANDAR
             processedData = []
             print("\tImporting file from path: {path}".format(path = str(data)))
 
-            for batch in pd.read_csv(str(data), chunksize=batchSize, nrows=nbRows):
+            for batch in pd.read_csv(str(data), converters={'title':literal_eval}, chunksize=batchSize, nrows=nbRows):
                 batch[str(target)] = batch[str(target)].map(lambda sentences: [ 
                     [
                         token for token in sentence if token and token not in stopWords
                     ]
                     for sentence in sentences if sentence])
-                    
+
+                batch[str(target)] = batch[str(target)].map(lambda sentences:
+                    listExtraction(sentences))
+
                 processedData.append(batch)
 
                 del(batch)
