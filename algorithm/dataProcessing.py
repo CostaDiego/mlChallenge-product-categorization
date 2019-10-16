@@ -181,11 +181,11 @@ def removeStopWords(data, target, language, savePath = None, batchSize = STANDAR
 
     elif isinstance(data, str):
         if isinstance(savePath, str):
-
             print("\tImporting file from path: {path}".format(path = str(data)))
             print("\tSaving file on path: {path}".format(path = str(savePath)))
             FtIndex = True
             for batch in pd.read_csv(str(data), converters={'title':literal_eval}, chunksize=batchSize, nrows=nbRows):
+                
                 batch[str(target)] = batch[str(target)].map(lambda sentences: [ 
                     [
                         token.lower() for token in sentence if token and token.lower() not in stopWords
@@ -194,12 +194,13 @@ def removeStopWords(data, target, language, savePath = None, batchSize = STANDAR
 
                 batch[str(target)] = batch[str(target)].map(lambda sentences:
                     listExtraction(sentences))
-
+                    
                 batch.to_csv(str(savePath),
                                 index = False,
                                 header = FtIndex,
                                 mode = "a"
                                     )
+
                 if FtIndex:
                     FtIndex = False
 
